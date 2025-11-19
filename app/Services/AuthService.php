@@ -8,24 +8,26 @@ use Illuminate\Support\Collection;
 
 class AuthService
 {
-    const ERROR_SOMETHING_WAS_WRONG = "Something was wrong!";
+    const ERROR_SOMETHING_WAS_WRONG = 'Something was wrong!';
 
     public function loginWithEmail(array $data): array
     {
-        if (auth('admin-api')->attempt(['email' => $data['email'], 'password' => $data['password'], 'is_active' => true])) {
+        if (auth('admin')->attempt(['email' => $data['email'], 'password' => $data['password'], 'is_active' => true])) {
             $admin = auth('admin')->user();
+
             return [
                 'data' => $this->setCredential($admin),
-                'message' => "Successfully logged in"
+                'message' => 'Successfully logged in',
             ];
         }
-        throw new ApiException("Credential did not match!", 404);
+        throw new ApiException('Credential did not match!', 404);
     }
 
     public function logout(): string
     {
         auth('admin-api')->user()->token()->revoke();
-        return "Successfully logged out.";
+
+        return 'Successfully logged out.';
     }
 
     private function setCredential(object $admin): array
@@ -35,7 +37,8 @@ class AuthService
         $data['name'] = $admin->name;
         $data['email'] = $admin->email;
         $data['image'] = $admin->image ? asset($admin->image) : asset('seeder-images/S-Admin.png');
-        $data['token'] = $admin->createToken('tokenName')->accessToken;
+        $data['token'] = $admin->createToken('tokenName', ['admin'])->accessToken;
+
         return $data;
     }
 
@@ -44,6 +47,7 @@ class AuthService
         if (auth('admin-api')->check()) {
             return true;
         }
+
         return false;
     }
 
