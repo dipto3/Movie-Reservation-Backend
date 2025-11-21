@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
 use App\Services\AuthService;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
@@ -19,30 +18,34 @@ class AuthController extends Controller
     public function login(AuthRequest $request): JsonResponse
     {
         $data = $this->service->loginWithEmail($request->validated());
+
         return response()->json($data, 200);
     }
 
     public function logout(): JsonResponse
     {
         $message = $this->service->logout();
+
         return response()->json([
-            'message' => $message
+            'message' => $message,
         ], 200);
     }
 
     public function check(): JsonResponse
     {
         $status = $this->service->check();
+
         return response()->json([
-            'status' => $status
+            'status' => $status,
         ], 200);
     }
 
     public function permissions(): JsonResponse
     {
         $permissions = $this->service->permissions();
+
         return response()->json([
-            'permissions' => $permissions
+            'permissions' => $permissions,
         ], 200);
     }
 }
